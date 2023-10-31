@@ -1,23 +1,53 @@
 import random
 import time
 import matplotlib.pyplot as plt
-from sortedcontainers import SortedDict
+
+class Node:
+    def __init__(self, val):
+        self.val = val
+        self.left = None
+        self.right = None
+
+
+class BST:
+    def __init__(self):
+        self.root = None
+
+    def insert(self, val):
+        if not self.root:
+            self.root = Node(val)
+        else:
+            self._insert(val, self.root)
+
+    def _insert(self, val, node):
+        if val < node.val:
+            if not node.left:
+                node.left = Node(val)
+            else:
+                self._insert(val, node.left)
+        elif val == node.val:
+            return
+        else:
+            if not node.right:
+                node.right = Node(val)
+            else:
+                self._insert(val, node.right)
 
 def generateRandomList(n):
     random_list = [random.randint(0, n) for _ in range(n)]
     return random_list
 
 def measureBinaryTreeInsertionTime(n):
-    keys = list(range(n))
+    keys = generateRandomList(n)
     random.shuffle(keys)
     data = generateRandomList(n)
-    bt = SortedDict()
-    startTime = time.time()
+    multimap = BST()
+    startTime = time.perf_counter()
 
     for i in range(n):
-        bt[keys[i]] = data[i]
+        multimap.insert((keys[i], data[i]))
 
-    endTime = time.time()
+    endTime = time.perf_counter()
     return endTime - startTime
 
 def measureHashTableInsertionTime(n):
@@ -25,19 +55,19 @@ def measureHashTableInsertionTime(n):
     random.shuffle(keys)
     data = generateRandomList(n)
     bt = dict()
-    startTime = time.time()
+    startTime = time.perf_counter()
 
     for i in range(n):
         bt[keys[i]] = data[i]
 
-    endTime = time.time()
+    endTime = time.perf_counter()
     return endTime - startTime
 
 inputs = []
 btInsertionTimes = []
 hashInsertionTimes = []
 
-for i in range(10000):
+for i in range(0, 50000, 500):
     print(i)
     INPUTSIZE = i
 
